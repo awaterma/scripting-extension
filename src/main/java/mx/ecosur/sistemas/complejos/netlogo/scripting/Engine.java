@@ -31,8 +31,9 @@ public class Engine {
 
     static {
         options = new Options();
-        options.addOption("file",true,"file with NetLogo commands to be run");
+        options.addOption("file",true,"input and execute a file containing NetLogo commands");
         options.addOption("console",false,"accept commands from the console");
+        options.addOption("help",false,"print out this help message");
     }
 
     private File input;
@@ -108,18 +109,20 @@ public class Engine {
 
         } else if (cmd.hasOption("console")) {
             engine = new Engine();
+            System.out.println("NetLogo Scripting Engine");
+            System.out.println("Type 'exit' to quit.");
+            System.out.println("------------------------");
             while (engine.ready()) {
                 System.out.print("observer> ");
                 String command = engine.readLine();
                 try {
                     engine.command(command);
-                } catch (Exception e) { System.out.println(e.getLocalizedMessage()); }
+                } catch (Exception e) {
+                    System.out.println(e.getLocalizedMessage()); }
             }
         } else {
-            engine = new Engine();
-            for (String s : args) {
-                try { engine.command(s); } catch (Exception e) { System.out.println(e.getLocalizedMessage()); }
-            }
+            HelpFormatter f = new HelpFormatter();
+            f.printHelp("java -jar scripting-extension -<option>", options);
         }
     }
 
